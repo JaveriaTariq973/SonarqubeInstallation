@@ -1,43 +1,11 @@
-# SonarQube Installation — Version Information
+# SonarQube Version Information
 
-Fill this in after you complete Step 6 (Verify the installation) of the setup guide.
-
-| Field | Value |
-|---|---|
-| SonarQube version | *(from Administration → System)* |
-| SonarQube edition | *(e.g. Community)* |
-| Docker version | *(output of `docker --version`)* |
-| Docker Compose version | *(output of `docker compose version`)* |
-| PostgreSQL image version | `postgres:16` |
-| Operating system | *(e.g. Windows 11 / macOS Sonoma / Ubuntu 24.04)* |
-| Installation date | *(today's date)* |
-| SonarQube image digest | *(output of the `docker image inspect` command below)* |
-
-## How to get the image digest
-
-**Linux / macOS:**
-```bash
-docker image inspect sonarqube:community --format='{{index .RepoDigests 0}}'
-```
-
-**Windows PowerShell:**
-```powershell
-docker image inspect sonarqube:community --format='{{index .RepoDigests 0}}'
-```
-
-Paste the exact output above. This digest pins the exact image you used, even if the `community` tag later points to a newer version — important for reproducibility across the team.
-
-## Acceptance checklist
-
-Copy this into your submission and tick off as you go:
-
-- [ ] `http://localhost:9000` opens successfully
-- [ ] Administrator can log in
-- [ ] Default admin password has been changed
-- [ ] Both Docker containers (`sonarqube`, `sonarqube_database`) are running
-- [ ] SonarQube reports an **Operational** status
-- [ ] SonarQube version recorded above
-- [ ] SonarQube image digest recorded above
-- [ ] SonarQube restarts (`docker compose restart`) without losing data
-- [ ] Another team member could reproduce this using only the compose.yaml + these notes
-- [ ] No passwords or tokens committed to Git
+- **SonarQube Version:** 26.7.0.124771 (Community Edition)
+- **SonarQube Edition:** Community
+- **Docker Version:** Docker version 29.3.0-1, build 5927d80c76b3ce5cf782be818922966e8a0d87a3
+- **PostgreSQL Image Version:** postgres:16
+- **Operating System:** Ubuntu (GitHub Codespaces Linux container)
+- **Installation Date:** July 24, 2026
+- **Docker Image Digest:** sonarqube@sha256:160bd2f6a3485bd09b655ef22dd63c02bd1fa7ba82aa5d9973fd010b8bcca0b3
+- **Server Status:** Operational (verified via Administration → System)
+- **Server ID:** 3D6604EE-AZ-VYFtA00cMaUHO95Sr
