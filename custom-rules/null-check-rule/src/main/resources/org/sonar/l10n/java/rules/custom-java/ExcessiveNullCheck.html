@@ -1,0 +1,91 @@
+<p>
+  When the same field is checked for <code>null</code> independently in several methods of a class,
+  that repetition is a sign the class is missing a proper representation of the "absent" case.
+  Each additional null-check is another place a future maintainer can forget to add, and another
+  branch a test suite has to cover for no real behavioral reason.
+</p>
+<p>
+  Introducing a <strong>Null Object</strong> (an implementation of the field's type that
+  provides a safe, no-op or default behavior) — or, in modern Java, wrapping the field in
+  <code>java.util.Optional</code> — lets calling code stop asking "is this null?" and simply
+  invoke the behavior it needs.
+</p>
+
+<h2>Noncompliant Code Example</h2>
+<pre>
+class OrderProcessor {
+
+  private Discount discount; // may be null
+
+  void applyDiscount(Order order) {
+    if (discount != null) {
+      order.setTotal(discount.apply(order.getTotal()));
+    }
+  }
+
+  String describeDiscount() {
+    if (discount != null) {
+      return discount.getDescription();
+    }
+    return "No discount";
+  }
+
+  boolean hasDiscount() {
+    return discount != null;
+  }
+}
+</pre>
+
+<h2>Compliant Solution</h2>
+<pre>
+class OrderProcessor {
+
+  private Discount discount = Discount.NONE; // never null
+
+  void applyDiscount(Order order) {
+    order.setTotal(discount.apply(order.getTotal()));
+  }
+
+  String describeDiscount() {
+    return discount.getDescription();
+  }
+
+  boolean hasDiscount() {
+    return discount.isPresent();
+  }
+}
+
+interface Discount {
+
+  Discount NONE = new Discount() {
+    public double apply(double total) { return total; }
+    public String getDescription() { return "No discount"; }
+    public boolean isPresent() { return false; }
+  };
+
+  double apply(double total);
+  String getDescription();
+  boolean isPresent();
+}
+</pre>
+
+<h2>Limitations</h2>
+<ul>
+  <li>Only direct <code>== null</code> / <code>!= null</code> comparisons on fields are detected.
+      <code>Objects.isNull(...)</code>, <code>Optional.isPresent()</code>, and
+      <code>instanceof</code>-based null-guard idioms are not currently recognized.</li>
+  <li>The rule counts distinct <em>methods</em> containing a check, not distinct
+      <em>checks</em> — two null-checks on the same field in one method count once.</li>
+  <li>This rule flags a <em>candidate</em> for the Null Object refactoring; it does not verify
+      that a sensible default/no-op behavior actually exists for the type, which is a design
+      judgment left to the developer.</li>
+  <li>Unlike the source paper's regex-based approach, this implementation uses the Java AST and
+      symbol table, so it correctly ignores local variables and parameters that happen to share
+      a field's name, and only matches fields whose null-check recurs across the same class.</li>
+</ul>
+
+<h2>See</h2>
+<ul>
+  <li>Martin Fowler, Kent Beck — <em>Refactoring: Improving the Design of Existing Code</em> (1999) — Introduce Null Object</li>
+  <li>William C. Wake — <em>Refactoring Workbook</em> (2004)</li>
+</ul>

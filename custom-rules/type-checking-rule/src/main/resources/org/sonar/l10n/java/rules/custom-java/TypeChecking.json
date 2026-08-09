@@ -1,0 +1,19 @@
+{
+  "title": "Classes should not dispatch behavior by repeatedly switching or testing on type (Type Checking / Conditional Complexity)",
+  "type": "CODE_SMELL",
+  "status": "ready",
+  "remediation": {
+    "func": "Constant\/Issue",
+    "constantCost": "45min"
+  },
+  "tags": [
+    "design",
+    "brain-overload"
+  ],
+  "defaultSeverity": "Major",
+  "ruleSpecification": "RSPEC-CUSTOM-2",
+  "sqKey": "TypeChecking",
+  "scope": "Main",
+  "defaultQualityProfiles": ["Sonar way"],
+  "quickfix": "unknown"
+}

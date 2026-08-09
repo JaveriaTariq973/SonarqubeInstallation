@@ -1,0 +1,19 @@
+{
+  "title": "Fields whose null-checks are duplicated across many methods should be replaced with a Null Object",
+  "type": "CODE_SMELL",
+  "status": "ready",
+  "remediation": {
+    "func": "Constant\/Issue",
+    "constantCost": "30min"
+  },
+  "tags": [
+    "design",
+    "brain-overload"
+  ],
+  "defaultSeverity": "Minor",
+  "ruleSpecification": "RSPEC-CUSTOM-1",
+  "sqKey": "ExcessiveNullCheck",
+  "scope": "Main",
+  "defaultQualityProfiles": ["Sonar way"],
+  "quickfix": "unknown"
+}

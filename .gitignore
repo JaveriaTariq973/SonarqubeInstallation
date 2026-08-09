@@ -1,0 +1,10 @@
+# Cloned external repos - not part of our submission
+analysis-repos/
+
+# Maven build artifacts
+custom-rules/*/target/
+**/target/
+
+# IDE/system files
+.DS_Store
+*.class

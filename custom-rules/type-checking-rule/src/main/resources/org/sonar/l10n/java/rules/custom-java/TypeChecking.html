@@ -1,0 +1,96 @@
+<p>
+  A class exhibits <strong>Type Checking</strong> (also known as the "Switch Statements" or
+  "Conditional Complexity" smell) when its behavior is repeatedly selected by testing an object's
+  type or a "type code" field, rather than by polymorphic dispatch. Two shapes of this smell are
+  detected:
+</p>
+<ul>
+  <li>The same enum-typed field is used as the selector of a <code>switch</code> statement in
+      several methods of the class — every new case requires touching every one of those
+      switches.</li>
+  <li>An <code>if</code> / <code>else if</code> chain tests the same variable with
+      <code>instanceof</code> across three or more branches — every new subtype requires adding
+      another branch here (and everywhere else the same chain is duplicated).</li>
+</ul>
+<p>
+  Both are resolved with <strong>Replace Conditional with Polymorphism</strong> (create a subclass
+  per case, move each branch's logic into an overriding method) or, when the "type" represents
+  changing state rather than a fixed hierarchy, <strong>Replace Type Code with State/Strategy</strong>.
+</p>
+
+<h2>Noncompliant Code Example</h2>
+<pre>
+class Bird {
+
+  enum Type { EUROPEAN, AFRICAN, NORWEGIAN_BLUE }
+
+  private Type type;
+
+  double getSpeed() {
+    switch (type) {
+      case EUROPEAN:
+        return getBaseSpeed();
+      case AFRICAN:
+        return getBaseSpeed() - getLoadFactor() * numberOfCoconuts;
+      case NORWEGIAN_BLUE:
+        return isNailed ? 0 : getBaseSpeed(voltage);
+    }
+    throw new IllegalStateException();
+  }
+
+  String getPlumageDescription() {
+    switch (type) {
+      case EUROPEAN:
+        return "blue and white";
+      case AFRICAN:
+        return "unladen";
+      case NORWEGIAN_BLUE:
+        return "beautiful plumage";
+    }
+    throw new IllegalStateException();
+  }
+}
+</pre>
+
+<h2>Compliant Solution</h2>
+<pre>
+abstract class Bird {
+  abstract double getSpeed();
+  abstract String getPlumageDescription();
+}
+
+class European extends Bird {
+  double getSpeed() { return getBaseSpeed(); }
+  String getPlumageDescription() { return "blue and white"; }
+}
+
+class African extends Bird {
+  double getSpeed() { return getBaseSpeed() - getLoadFactor() * numberOfCoconuts; }
+  String getPlumageDescription() { return "unladen"; }
+}
+
+class NorwegianBlue extends Bird {
+  double getSpeed() { return isNailed ? 0 : getBaseSpeed(voltage); }
+  String getPlumageDescription() { return "beautiful plumage"; }
+}
+</pre>
+
+<h2>Limitations</h2>
+<ul>
+  <li>Only enum-typed fields are treated as "type codes" for the switch detector. int/String type
+      codes are not currently matched (extend <code>fieldSelector</code> in the check to widen
+      this).</li>
+  <li>The instanceof-chain detector requires the same variable to be tested in every branch of a
+      single if/else-if chain; instanceof checks scattered across unrelated statements aren't
+      correlated.</li>
+  <li>This rule flags a <em>candidate</em> for polymorphic refactoring. It does not verify the
+      branches actually share a meaningful abstraction — that judgment remains the developer's.</li>
+  <li>Unlike JDeodorant, this rule does not rank refactoring opportunities by their impact on
+      design, and does not apply the refactoring automatically — it only reports the smell.</li>
+</ul>
+
+<h2>See</h2>
+<ul>
+  <li>Martin Fowler, Kent Beck — <em>Refactoring: Improving the Design of Existing Code</em> (1999) — "Switch Statements"</li>
+  <li>N. Tsantalis, T. Chaikalis, A. Chatzigeorgiou — "JDeodorant: Identification and Removal of Type-Checking Bad Smells," CSMR 2008</li>
+</ul>

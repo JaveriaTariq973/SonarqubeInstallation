@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>org.example</groupId>
+  <artifactId>excessive-null-check-plugin</artifactId>
+  <version>1.0.0</version>
+  <packaging>sonar-plugin</packaging>
+
+  <name>Excessive Null Check Custom Rule</name>
+  <description>
+    Custom SonarQube Java rule detecting fields whose null-checks are duplicated
+    across many methods (candidate for the Null Object refactoring), inspired by
+    "Automated detection of code smells caused by null checking conditions in
+    Java programs" (IEEE SAC).
+  </description>
+
+  <properties>
+    <maven.compiler.source>11</maven.compiler.source>
+    <maven.compiler.target>11</maven.compiler.target>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <!-- Pin to whatever SonarJava version matches your target SonarQube server -->
+  <sonar.java.version>8.34.0.44906</sonar.java.version>  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.sonarsource.api.plugin</groupId>
+      <artifactId>sonar-plugin-api</artifactId>
+      <version>13.5.0.4319</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.sonarsource.java</groupId>
+      <artifactId>java-frontend</artifactId>
+      <version>${sonar.java.version}</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
+      <version>5.10.0</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.sonarsource.java</groupId>
+      <artifactId>java-checks-testkit</artifactId>
+      <version>${sonar.java.version}</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.sonarsource.sonar-packaging-maven-plugin</groupId>
+        <artifactId>sonar-packaging-maven-plugin</artifactId>
+        <version>1.23.0.740</version>
+        <extensions>true</extensions>
+        <configuration>
+          <pluginKey>excessivenullcheck</pluginKey>
+          <pluginClass>org.sonar.samples.java.ExcessiveNullCheckPlugin</pluginClass>
+          <sonarLintSupported>true</sonarLintSupported>
+                    <requirePlugins>java:8.34.0.44906</requirePlugins>
+<requiredForLanguages>java</requiredForLanguages>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>
